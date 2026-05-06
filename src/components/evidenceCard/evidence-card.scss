@@ -1,0 +1,112 @@
+@use "sass:color";
+@use "../../tokens/tokens.scss" as *;
+
+.evidence-card {
+  position: relative;
+  display: grid;
+  gap: $spacing-3;
+  width: min(100%, 320px);
+  padding: $spacing-4;
+  border: 1px solid color.change($color-text-primary, $alpha: 0.14);
+  border-radius: $radius-md;
+  background: linear-gradient(
+    180deg,
+    color.scale($color-surface-paper, $lightness: 4%) 0%,
+    $color-surface-paper 100%
+  );
+  box-shadow:
+    $shadow-paper,
+    inset 0 1px 0 color.change($color-surface-folder-hover, $alpha: 0.58);
+  color: $color-text-secondary;
+  overflow: hidden;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      color.change($color-accent-evidence, $alpha: 0.06) 0%,
+      transparent 28%
+    );
+    pointer-events: none;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: $spacing-2;
+    right: $spacing-2;
+    width: 42px;
+    height: 10px;
+    border-radius: 999px;
+    background: radial-gradient(
+      circle at center,
+      color.change($color-accent-evidence, $alpha: 0.18) 0%,
+      transparent 72%
+    );
+    opacity: 0.75;
+    transform: rotate(-10deg);
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-2px) rotate(-0.2deg);
+    border-color: color.change($color-accent-evidence, $alpha: 0.24);
+    box-shadow:
+      0 10px 18px color.change($color-background-primary, $alpha: 0.18),
+      inset 0 1px 0 color.change($color-surface-folder-hover, $alpha: 0.7);
+  }
+}
+
+.evidence-card__title,
+.evidence-card__description,
+.evidence-card__image {
+  position: relative;
+  z-index: 1;
+}
+
+.evidence-card__title {
+  margin: 0;
+  padding-bottom: $spacing-2;
+  border-bottom: 1px solid color.change($color-text-primary, $alpha: 0.1);
+  color: $color-text-primary;
+  font-family: $typography-font-family-serif;
+  font-size: $typography-font-size-lg;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.evidence-card__description {
+  margin: 0;
+  color: $color-text-secondary;
+  font-family: $typography-font-family-ui;
+  font-size: $typography-font-size-sm;
+  line-height: 1.6;
+}
+
+.evidence-card__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  padding: $spacing-2;
+  border: 1px solid color.change($color-text-primary, $alpha: 0.12);
+  border-radius: $radius-sm;
+  background: $color-surface-photo;
+  box-shadow:
+    0 1px 0 color.change($color-surface-paper, $alpha: 0.85),
+    0 8px 14px color.change($color-background-primary, $alpha: 0.12);
+  filter: saturate(0.82) contrast(1.04);
+}
+
+@media (max-width: 640px) {
+  .evidence-card {
+    width: 100%;
+    padding: $spacing-3;
+  }
+}

@@ -1,0 +1,239 @@
+@use "sass:color";
+@use "../../tokens/tokens.scss" as *;
+
+.folder {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(100%, 320px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 180ms ease;
+
+  &:hover {
+    transform: translateY(-2px) rotate(-0.4deg);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent-investigation;
+    outline-offset: 6px;
+  }
+}
+
+.folder__tab {
+  position: relative;
+  z-index: 1;
+  margin-left: $spacing-4;
+  padding: $spacing-2 $spacing-4 calc(#{$spacing-2} - 2px);
+  border: 1px solid color.change($color-text-primary, $alpha: 0.2);
+  border-bottom: 0;
+  border-top-left-radius: $radius-md;
+  border-top-right-radius: $radius-md;
+  background: linear-gradient(
+    180deg,
+    color.scale($color-surface-folder-hover, $lightness: 10%) 0%,
+    $color-surface-folder 100%
+  );
+  color: $color-text-secondary;
+  box-shadow: 0 -1px 0 color.change($color-surface-paper, $alpha: 0.6) inset;
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-xs;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.folder__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  width: 100%;
+  min-height: 180px;
+  padding: calc(#{$spacing-5} + #{$spacing-2}) $spacing-4 $spacing-4;
+  border: 1px solid color.change($color-text-primary, $alpha: 0.2);
+  border-radius: $radius-md;
+  border-top-left-radius: $radius-sm;
+  background: linear-gradient(
+    180deg,
+    color.scale($color-surface-folder-hover, $lightness: 12%) 0%,
+    $color-surface-folder 18%,
+    color.mix($color-surface-folder, $color-background-secondary, 90%) 100%
+  );
+  box-shadow:
+    $shadow-folder,
+    inset 0 1px 0 color.change($color-surface-paper, $alpha: 0.78),
+    inset 0 -18px 26px color.change($color-background-primary, $alpha: 0.08);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: $spacing-3;
+    left: $spacing-4;
+    right: $spacing-4;
+    height: 1px;
+    background: color.change($color-text-primary, $alpha: 0.16);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: $spacing-4;
+    bottom: $spacing-4;
+    width: 56px;
+    height: 12px;
+    border-radius: 999px;
+    background: radial-gradient(
+      circle at center,
+      color.change($color-accent-evidence, $alpha: 0.18) 0%,
+      transparent 72%
+    );
+    transform: rotate(-8deg);
+    opacity: 0.7;
+  }
+}
+
+.folder__eyebrow {
+  color: $color-text-muted;
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-xs;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.folder__title {
+  max-width: 14ch;
+  color: $color-text-primary;
+  font-family: $typography-font-family-serif;
+  font-size: $typography-font-size-xl;
+  font-weight: 600;
+  line-height: 0.95;
+}
+
+.folder-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: $spacing-4;
+  background: color.change($color-background-archive, $alpha: 0.72);
+  backdrop-filter: blur(5px);
+}
+
+.folder-modal__dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 760px);
+  max-height: min(88vh, 920px);
+  border: 1px solid color.change($color-text-primary, $alpha: 0.18);
+  border-radius: $radius-lg;
+  background: linear-gradient(
+    180deg,
+    color.scale($color-surface-paper, $lightness: 6%) 0%,
+    $color-surface-paper 100%
+  );
+  box-shadow:
+    0 24px 56px color.change($color-background-primary, $alpha: 0.48),
+    inset 0 1px 0 color.change($color-surface-folder-hover, $alpha: 0.82);
+  overflow: hidden;
+}
+
+.folder-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding: $spacing-5 $spacing-5 $spacing-4;
+  border-bottom: 1px solid color.change($color-text-primary, $alpha: 0.12);
+  background: color.change($color-surface-folder, $alpha: 0.24);
+}
+
+.folder-modal__kicker {
+  margin: 0 0 $spacing-1;
+  color: $color-text-muted;
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-xs;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.folder-modal__title {
+  margin: 0;
+  color: $color-text-primary;
+  font-family: $typography-font-family-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 0.95;
+}
+
+.folder-modal__close {
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: $spacing-2 $spacing-3;
+  border: 1px solid color.change($color-text-primary, $alpha: 0.18);
+  border-radius: $radius-md;
+  background: color.change($color-surface-paper, $alpha: 0.8);
+  color: $color-text-secondary;
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-xs;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &:hover {
+    background: color.change($color-surface-folder-hover, $alpha: 0.84);
+  }
+}
+
+.folder-modal__info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: $spacing-3;
+  padding: $spacing-4 $spacing-5;
+  border-bottom: 1px solid color.change($color-text-primary, $alpha: 0.08);
+  background: color.change($color-surface-folder, $alpha: 0.12);
+  color: $color-text-secondary;
+}
+
+.folder-modal__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-5;
+  color: $color-text-secondary;
+  line-height: 1.65;
+  scrollbar-color: $color-accent-archive
+    color.change($color-surface-folder, $alpha: 0.3);
+
+  p:first-child {
+    margin-top: 0;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .folder__body {
+    min-height: 156px;
+    padding: $spacing-5 $spacing-3 $spacing-3;
+  }
+
+  .folder__title {
+    font-size: 2rem;
+  }
+
+  .folder-modal__header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: $spacing-4;
+  }
+
+  .folder-modal__info,
+  .folder-modal__content {
+    padding-inline: $spacing-4;
+  }
+}

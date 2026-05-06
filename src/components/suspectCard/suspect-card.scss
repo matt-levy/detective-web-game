@@ -1,0 +1,133 @@
+@use "sass:color";
+@use "../../tokens/tokens.scss" as *;
+
+.suspect-card {
+  position: relative;
+  display: grid;
+  gap: $spacing-3;
+  width: min(100%, 340px);
+  padding: $spacing-4;
+  border: 1px solid color.change($color-text-primary, $alpha: 0.16);
+  border-radius: $radius-md;
+  background: linear-gradient(
+    180deg,
+    color.scale($color-surface-paper, $lightness: 5%) 0%,
+    $color-surface-paper 100%
+  );
+  box-shadow:
+    $shadow-paper,
+    inset 0 1px 0 color.change($color-surface-folder-hover, $alpha: 0.6);
+  color: $color-text-secondary;
+  overflow: hidden;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      130deg,
+      color.change($color-accent-cold-case, $alpha: 0.06) 0%,
+      transparent 34%
+    );
+    pointer-events: none;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: $spacing-3;
+    right: -20px;
+    width: 88px;
+    height: 18px;
+    background: color.change($color-accent-evidence, $alpha: 0.16);
+    box-shadow: 0 1px 0 color.change($color-surface-paper, $alpha: 0.35) inset;
+    opacity: 0.85;
+    transform: rotate(18deg);
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-2px) rotate(-0.15deg);
+    border-color: color.change($color-accent-cold-case, $alpha: 0.28);
+    box-shadow:
+      0 12px 22px color.change($color-background-primary, $alpha: 0.2),
+      inset 0 1px 0 color.change($color-surface-folder-hover, $alpha: 0.72);
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  h3 {
+    margin: 0;
+    padding-bottom: $spacing-2;
+    border-bottom: 1px solid color.change($color-text-primary, $alpha: 0.1);
+    color: $color-text-primary;
+    font-family: $typography-font-family-serif;
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 600;
+    line-height: 0.98;
+  }
+
+  img {
+    display: block;
+    width: min(100%, 220px);
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    justify-self: center;
+    padding: $spacing-2;
+    border: 1px solid color.change($color-text-primary, $alpha: 0.14);
+    border-radius: $radius-sm;
+    background: $color-surface-photo;
+    box-shadow:
+      0 1px 0 color.change($color-surface-paper, $alpha: 0.86),
+      0 8px 16px color.change($color-background-primary, $alpha: 0.14);
+    filter: saturate(0.78) contrast(1.05);
+    transform: rotate(-1.4deg);
+  }
+
+  p {
+    margin: 0;
+    color: $color-text-secondary;
+    font-family: $typography-font-family-ui;
+    font-size: $typography-font-size-sm;
+    line-height: 1.6;
+  }
+
+  p + p {
+    padding-top: $spacing-2;
+    border-top: 1px dashed color.change($color-text-muted, $alpha: 0.22);
+  }
+
+  strong {
+    display: inline-block;
+    min-width: 88px;
+    margin-right: $spacing-1;
+    color: $color-text-primary;
+    font-family: $typography-font-family-typewriter;
+    font-size: $typography-font-size-xs;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+}
+
+@media (max-width: 640px) {
+  .suspect-card {
+    width: 100%;
+    padding: $spacing-3;
+  }
+
+  .suspect-card img {
+    width: min(100%, 200px);
+  }
+
+  .suspect-card strong {
+    min-width: 76px;
+  }
+}

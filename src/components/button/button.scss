@@ -1,0 +1,153 @@
+@use "sass:color";
+@use "../../tokens/tokens.scss" as *;
+
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  min-height: 44px;
+  padding: calc(#{$spacing-3} - 1px) $spacing-4;
+  border: 1px solid color.change($color-text-primary, $alpha: 0.28);
+  border-radius: $radius-md;
+  background: linear-gradient(
+    180deg,
+    color.scale($color-surface-folder-hover, $lightness: 12%) 0%,
+    $color-surface-folder 58%,
+    color.mix($color-surface-folder, $color-background-secondary, 88%) 100%
+  );
+  color: $color-text-primary;
+  box-shadow:
+    $shadow-folder,
+    inset 0 1px 0 color.change($color-surface-paper, $alpha: 0.75),
+    inset 0 -1px 0 color.change($color-background-primary, $alpha: 0.22);
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-sm;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  isolation: isolate;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+  }
+
+  &::before {
+    top: $spacing-2;
+    left: $spacing-3;
+    width: 2.25rem;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color.change($color-accent-evidence, $alpha: 0.42) 35%,
+      transparent 100%
+    );
+    opacity: 0.65;
+    transform: rotate(-2deg);
+  }
+
+  &::after {
+    right: 10px;
+    bottom: 8px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 35% 35%,
+      color.change($color-surface-paper, $alpha: 0.85) 0 8%,
+      color.change($color-accent-evidence, $alpha: 0.26) 24%,
+      transparent 72%
+    );
+    opacity: 0.55;
+    filter: blur(0.4px);
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: color.change($color-text-secondary, $alpha: 0.4);
+    background: linear-gradient(
+      180deg,
+      color.scale($color-surface-folder-hover, $lightness: 18%) 0%,
+      $color-surface-folder-hover 62%,
+      color.mix($color-surface-folder-hover, $color-background-secondary, 90%)
+        100%
+    );
+    box-shadow:
+      0 8px 18px color.change($color-background-archive, $alpha: 0.32),
+      inset 0 1px 0 color.change($color-surface-paper, $alpha: 0.85),
+      inset 0 -1px 0 color.change($color-background-primary, $alpha: 0.18);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow:
+      $shadow-paper,
+      inset 0 2px 3px color.change($color-background-primary, $alpha: 0.16);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color.change($color-accent-investigation, $alpha: 0.92);
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    color: $color-text-muted;
+    background: linear-gradient(
+      180deg,
+      color.mix($color-surface-folder, $color-surface-photo, 78%) 0%,
+      color.mix($color-surface-folder, $color-background-secondary, 84%) 100%
+    );
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.72;
+    transform: none;
+  }
+}
+
+.button--evidence {
+  border-color: color.change($color-accent-evidence, $alpha: 0.34);
+  box-shadow:
+    $shadow-folder,
+    inset 0 0 0 1px color.change($color-accent-evidence, $alpha: 0.12),
+    inset 0 1px 0 color.change($color-surface-paper, $alpha: 0.72);
+
+  &::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color.change($color-accent-evidence, $alpha: 0.62) 40%,
+      transparent 100%
+    );
+  }
+}
+
+.button--archive {
+  border-color: color.change($color-accent-archive, $alpha: 0.34);
+  box-shadow:
+    $shadow-folder,
+    inset 0 0 0 1px color.change($color-accent-archive, $alpha: 0.14),
+    inset 0 1px 0 color.change($color-surface-paper, $alpha: 0.72);
+
+  &::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color.change($color-accent-archive, $alpha: 0.5) 40%,
+      transparent 100%
+    );
+  }
+}
