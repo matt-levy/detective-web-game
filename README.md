@@ -1,73 +1,82 @@
-# React + TypeScript + Vite
+# Detective Web Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript detective-game prototype built with Vite, SCSS design tokens, and Zustand for game state.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `React 19`
+- `TypeScript`
+- `Vite`
+- `SCSS`
+- `Zustand`
 
-## React Compiler
+## Current Direction
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The app is being built as a noir/detective UI with tactile, in-world components instead of a generic app shell. Current pieces include:
 
-## Expanding the ESLint configuration
+- `Folder` for case files and modal document reading
+- `Button` for themed in-world actions
+- `EvidenceCard` for clues and physical items
+- `SuspectCard` for dossier-style person profiles
+- `EvidenceBoard` for deduction flow and theory building
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## State Management
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Game state is separated from presentational components with Zustand.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- [src/game/caseData.ts](./src/game/caseData.ts) contains structured case content
+- [src/game/store.ts](./src/game/store.ts) contains active game state and board actions
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The current store manages:
+
+- active case data
+- selected evidence-board item
+- theory slot assignments
+- theory result state
+
+This keeps React components focused on rendering and user interaction while game rules live in one place.
+
+## Styling
+
+Design tokens live in:
+
+- [src/tokens/tokens.json](./src/tokens/tokens.json)
+- [src/tokens/_tokens.scss](./src/tokens/_tokens.scss)
+- [src/tokens/tokens.css](./src/tokens/tokens.css)
+
+SCSS component styles should use the generated SCSS tokens rather than hard-coded values where possible.
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run preview
+npm run tokens
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+src/
+  components/
+    button/
+    evidenceBoard/
+    evidenceCard/
+    folder/
+    suspectCard/
+  game/
+    caseData.ts
+    store.ts
+  tokens/
+    tokens.json
+    _tokens.scss
+    tokens.css
 ```
+
+## Notes
+
+- The current app includes a sample Bellweather case wired through the Zustand store.
+- The evidence board is intentionally constrained for now: select clues, assign them to theory slots, and submit a deduction.
+- Drag-and-drop has not been added yet; the current focus is game flow and state structure first.
