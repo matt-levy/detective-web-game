@@ -1,9 +1,10 @@
-import { useState, type DragEvent } from "react";
+import { useState, type DragEvent, type KeyboardEvent } from "react";
 
 import { Button } from "../button/Button";
-import { EvidenceCard } from "../evidenceCard/EvidenceCard";
-import { SuspectCard } from "../suspectCard/SuspectCard";
-import { type BoardItem } from "../../game/caseData";
+import { EvidenceBoardHeader } from "./EvidenceBoardHeader";
+import { EvidenceBoardInspector } from "./EvidenceBoardInspector";
+import { EvidenceBoardSlot } from "./EvidenceBoardSlot";
+import { EvidenceBoardTray } from "./EvidenceBoardTray";
 import { getBoardItemById, useGameStore } from "../../game/store";
 import "./evidence-board.scss";
 
@@ -11,32 +12,12 @@ export interface EvidenceBoardProps {
   className?: string;
 }
 
-function renderBoardItem(item: BoardItem) {
-  if (item.category === "suspect") {
-    return (
-      <SuspectCard
-        name={item.name}
-        occupation={item.occupation}
-        age={item.age}
-        description={item.description}
-        alibi={item.alibi}
-        imageUrl={item.imageUrl}
-      />
-    );
-  }
-
-  return (
-    <EvidenceCard
-      title={item.title}
-      description={item.description}
-      imageUrl={item.imageUrl}
-    />
-  );
-}
-
 export function EvidenceBoard({ className = "" }: EvidenceBoardProps) {
   const [draggingItemId, setDraggingItemId] = useState<string | null>(null);
   const [dropTargetSlotId, setDropTargetSlotId] = useState<string | null>(null);
+  const [liveMessage, setLiveMessage] = useState(
+    "Board ready. Select a tray item, then place it into a theory slot.",
+  );
   const board = useGameStore((state) => state.currentCase.board);
   const selectedItemId = useGameStore((state) => state.selectedItemId);
   const assignments = useGameStore((state) => state.assignments);
@@ -51,10 +32,22 @@ export function EvidenceBoard({ className = "" }: EvidenceBoardProps) {
   const selectedItem = selectedItemId ? getBoardItemById(selectedItemId) : null;
   const allSlotsFilled = board.slots.every((slot) => assignments[slot.id]);
 
+  const announceSelection = (itemId: string) => {
+    const item = getBoardItemById(itemId);
+    if (item) {
+      setLiveMessage(`${item.label} selected. Move to a theory slot and press Enter or Space to place it.`);
+    }
+  };
+
+  const handleSelectItem = (itemId: string) => {
+    selectItem(itemId);
+    announceSelection(itemId);
+  };
+
   const handleTrayItemDragStart = (event: DragEvent<HTMLButtonElement>, itemId: string) => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", itemId);
-    selectItem(itemId);
+    handleSelectItem(itemId);
     setDraggingItemId(itemId);
   };
 
@@ -77,6 +70,11 @@ export function EvidenceBoard({ className = "" }: EvidenceBoardProps) {
     if (itemId) {
       assignItemToSlot(itemId, slotId);
       selectItem(itemId);
+      const item = getBoardItemById(itemId);
+      const slot = board.slots.find((entry) => entry.id === slotId);
+      if (item && slot) {
+        setLiveMessage(`${item.label} placed in ${slot.label}.`);
+      }
     }
     setDraggingItemId(null);
     setDropTargetSlotId(null);
@@ -92,18 +90,57 @@ export function EvidenceBoard({ className = "" }: EvidenceBoardProps) {
     }
   };
 
+  const handleSlotKeyAssign = (event: KeyboardEvent<HTMLDivElement>, slotId: string) => {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (!selectedItemId) {
+      setLiveMessage("No item selected. Choose a tray item first.");
+      return;
+    }
+
+    assignSelectedItem(slotId);
+    const item = getBoardItemById(selectedItemId);
+    const slot = board.slots.find((entry) => entry.id === slotId);
+    if (item && slot) {
+      setLiveMessage(`${item.label} placed in ${slot.label}.`);
+    }
+  };
+
+  const handleClearSlot = (slotId: string) => {
+    clearSlot(slotId);
+    const slot = board.slots.find((entry) => entry.id === slotId);
+    if (slot) {
+      setLiveMessage(`${slot.label} cleared.`);
+    }
+  };
+
+  const handleResetTheory = () => {
+    resetTheory();
+    setLiveMessage("Board reset. Select a tray item to start building the theory again.");
+  };
+
+  const handleSubmitTheory = () => {
+    const isCorrect = board.slots.every(
+      (slot) => assignments[slot.id] === board.solution[slot.id],
+    );
+    submitTheory();
+    setLiveMessage(
+      isCorrect
+        ? "Theory submitted. The arrangement is correct."
+        : "Theory submitted. The arrangement is not correct yet.",
+    );
+  };
+
   return (
     <section className={["evidence-board", className].filter(Boolean).join(" ")}>
-      <header className="evidence-board__header">
-        <div>
-          <p className="evidence-board__eyebrow">Evidence board</p>
-          <h2 className="evidence-board__title">{board.title}</h2>
-        </div>
-        <div className="evidence-board__objective">
-          <span className="evidence-board__objective-label">Objective</span>
-          <p>{board.objective}</p>
-        </div>
-      </header>
+      <p className="evidence-board__sr-only" aria-live="polite" aria-atomic="true">
+        {liveMessage}
+      </p>
+      <EvidenceBoardHeader title={board.title} objective={board.objective} />
 
       <div className="evidence-board__layout">
         <div className="evidence-board__theory">
@@ -117,41 +154,20 @@ export function EvidenceBoard({ className = "" }: EvidenceBoardProps) {
               const assignedItem = getBoardItemById(assignments[slot.id]);
 
               return (
-                <div
+                <EvidenceBoardSlot
                   key={slot.id}
-                  className={[
-                    "evidence-board__slot",
-                    assignedItem ? "evidence-board__slot--filled" : "",
-                    draggingItemId ? "evidence-board__slot--droppable" : "",
-                    dropTargetSlotId === slot.id ? "evidence-board__slot--over" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onDragOver={(event) => handleSlotDragOver(event, slot.id)}
-                  onDrop={(event) => handleSlotDrop(event, slot.id)}
-                  onDragLeave={(event) => handleSlotDragLeave(event, slot.id)}
-                  onClick={() => assignSelectedItem(slot.id)}
-                >
-                  <span className="evidence-board__slot-label">{slot.label}</span>
-                  {assignedItem ? (
-                    <>
-                      <span className="evidence-board__slot-value">{assignedItem.label}</span>
-                      <span className="evidence-board__slot-note">{assignedItem.note}</span>
-                      <button
-                        type="button"
-                        className="evidence-board__slot-clear"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          clearSlot(slot.id);
-                        }}
-                      >
-                        Clear
-                      </button>
-                    </>
-                  ) : (
-                    <span className="evidence-board__slot-hint">{slot.hint}</span>
-                  )}
-                </div>
+                  slot={slot}
+                  assignedItem={assignedItem}
+                  isDroppable={Boolean(draggingItemId)}
+                  isDropTarget={dropTargetSlotId === slot.id}
+                  selectedItemLabel={selectedItem?.label}
+                  onDragOver={handleSlotDragOver}
+                  onDrop={handleSlotDrop}
+                  onDragLeave={handleSlotDragLeave}
+                  onAssign={assignSelectedItem}
+                  onClear={handleClearSlot}
+                  onKeyAssign={handleSlotKeyAssign}
+                />
               );
             })}
           </div>
@@ -159,12 +175,12 @@ export function EvidenceBoard({ className = "" }: EvidenceBoardProps) {
           <div className="evidence-board__actions">
             <Button
               variant="evidence"
-              onClick={submitTheory}
+              onClick={handleSubmitTheory}
               disabled={!allSlotsFilled}
             >
               Submit Theory
             </Button>
-            <Button variant="archive" onClick={resetTheory}>
+            <Button variant="archive" onClick={handleResetTheory}>
               Reset Board
             </Button>
           </div>
@@ -182,62 +198,21 @@ export function EvidenceBoard({ className = "" }: EvidenceBoardProps) {
               ? board.successMessage
               : result === "incorrect"
                 ? "The pieces do not hold together yet. Re-check the alibi, the witness account, and the physical clue."
-                : "Drag items from the tray into the theory slots, or click a slot to place the active selection."}
+                : "Drag items from the tray into the theory slots, or use the keyboard: select a tray item, then focus a slot and press Enter or Space."}
           </div>
         </div>
 
-        <aside className="evidence-board__inspector">
-          <div className="evidence-board__panel-header">
-            <h3>Selected item</h3>
-            <p>
-              {selectedItem
-                ? `${selectedItem.label} is active. Drag it into a theory slot or click a slot to place it.`
-                : "No item selected yet."}
-            </p>
-          </div>
-
-          {selectedItem ? (
-            <>
-              <div className="evidence-board__selected-meta">
-                <span>{selectedItem.category}</span>
-                <p>{selectedItem.note}</p>
-              </div>
-              <div className="evidence-board__selected-card">{renderBoardItem(selectedItem)}</div>
-            </>
-          ) : null}
-        </aside>
+        <EvidenceBoardInspector selectedItem={selectedItem} />
       </div>
 
-      <div className="evidence-board__tray">
-        <div className="evidence-board__panel-header">
-          <h3>Pin tray</h3>
-          <p>Drag the fragments that best answer the current question onto the board.</p>
-        </div>
-
-        <div className="evidence-board__items">
-          {board.items.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={[
-                "evidence-board__item",
-                selectedItemId === item.id ? "evidence-board__item--active" : "",
-                draggingItemId === item.id ? "evidence-board__item--dragging" : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              onClick={() => selectItem(item.id)}
-              draggable
-              onDragStart={(event) => handleTrayItemDragStart(event, item.id)}
-              onDragEnd={handleTrayItemDragEnd}
-            >
-              <span className="evidence-board__item-chip">{item.category}</span>
-              <span className="evidence-board__item-label">{item.label}</span>
-              <span className="evidence-board__item-note">{item.note}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+      <EvidenceBoardTray
+        items={board.items}
+        selectedItemId={selectedItemId}
+        draggingItemId={draggingItemId}
+        onSelectItem={handleSelectItem}
+        onDragStart={handleTrayItemDragStart}
+        onDragEnd={handleTrayItemDragEnd}
+      />
     </section>
   );
 }
