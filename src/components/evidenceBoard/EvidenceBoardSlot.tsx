@@ -39,6 +39,11 @@ export function EvidenceBoardSlot({
         <button
           type="button"
           className="evidence-board__slot-clear"
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.stopPropagation();
+            }
+          }}
           onClick={(event) => {
             event.stopPropagation();
             onClear(slot.id);
