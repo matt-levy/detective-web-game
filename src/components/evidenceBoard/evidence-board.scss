@@ -145,10 +145,16 @@
   );
   color: $color-text-inverse;
   text-align: left;
+  cursor: pointer;
   transition:
     transform 160ms ease,
     border-color 160ms ease,
-    box-shadow 160ms ease;
+    box-shadow 160ms ease,
+    background 160ms ease;
+
+  &:hover {
+    border-color: color.change($color-accent-investigation, $alpha: 0.34);
+  }
 }
 
 .evidence-board__slot--filled {
@@ -157,6 +163,23 @@
   box-shadow:
     0 10px 16px color.change($color-background-primary, $alpha: 0.14),
     inset 0 1px 0 color.change($color-surface-folder, $alpha: 0.06);
+}
+
+.evidence-board__slot--droppable {
+  border-color: color.change($color-surface-paper, $alpha: 0.28);
+}
+
+.evidence-board__slot--over {
+  transform: translateY(-2px);
+  border-color: color.change($color-accent-investigation, $alpha: 0.7);
+  box-shadow:
+    0 14px 24px color.change($color-background-primary, $alpha: 0.18),
+    inset 0 0 0 1px color.change($color-accent-investigation, $alpha: 0.28);
+  background: linear-gradient(
+    180deg,
+    color.change($color-accent-investigation, $alpha: 0.16) 0%,
+    color.change($color-background-archive, $alpha: 0.74) 100%
+  );
 }
 
 .evidence-board__slot-label {
@@ -193,31 +216,6 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
-}
-
-.evidence-board__slot-assign {
-  margin-top: auto;
-  justify-self: start;
-  padding: $spacing-2 $spacing-3;
-  border: 1px solid color.change($color-surface-folder, $alpha: 0.2);
-  border-radius: $radius-sm;
-  background: color.change($color-background-primary, $alpha: 0.46);
-  color: $color-surface-paper;
-  font-family: $typography-font-family-typewriter;
-  font-size: $typography-font-size-xs;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    transform 160ms ease,
-    border-color 160ms ease,
-    background 160ms ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    border-color: color.change($color-accent-investigation, $alpha: 0.46);
-    background: color.change($color-background-secondary, $alpha: 0.64);
-  }
 }
 
 .evidence-board__actions {
@@ -307,6 +305,12 @@
   box-shadow:
     0 8px 18px color.change($color-background-primary, $alpha: 0.2),
     inset 0 1px 0 color.change($color-surface-folder, $alpha: 0.08);
+}
+
+.evidence-board__item--dragging {
+  opacity: 0.58;
+  transform: rotate(-1.5deg) scale(0.98);
+  border-color: color.change($color-accent-investigation, $alpha: 0.55);
 }
 
 .evidence-board__item-label {

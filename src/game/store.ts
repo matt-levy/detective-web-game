@@ -11,6 +11,7 @@ interface GameState {
   result: TheoryResult;
   selectItem: (itemId: string) => void;
   assignSelectedItem: (slotId: string) => void;
+  assignItemToSlot: (itemId: string, slotId: string) => void;
   clearSlot: (slotId: string) => void;
   submitTheory: () => void;
   resetTheory: () => void;
@@ -34,10 +35,17 @@ export const useGameStore = create<GameState>((set, get) => ({
       return;
     }
 
+    get().assignItemToSlot(selectedItemId, slotId);
+  },
+  assignItemToSlot: (itemId, slotId) => {
+    if (!itemId) {
+      return;
+    }
+
     set((state) => ({
       assignments: {
         ...state.assignments,
-        [slotId]: selectedItemId,
+        [slotId]: itemId,
       },
       result: "idle",
     }));
