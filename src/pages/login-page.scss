@@ -1,0 +1,96 @@
+@use "sass:color";
+@use "../tokens/tokens.scss" as *;
+
+.login-page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: $spacing-5;
+}
+
+.login-page__panel {
+  width: min(100%, 560px);
+  padding: clamp($spacing-5, 5vw, 1.75 * $spacing-5);
+  border: 1px solid color.change($color-text-inverse, $alpha: 0.14);
+  border-radius: $radius-lg;
+  background: linear-gradient(
+    180deg,
+    color.change($color-background-primary, $alpha: 0.7) 0%,
+    color.change($color-background-archive, $alpha: 0.92) 100%
+  );
+  box-shadow: 0 20px 60px color.change($color-background-primary, $alpha: 0.35);
+}
+
+.login-page__eyebrow,
+.login-page__title,
+.login-page__lede {
+  margin: 0;
+}
+
+.login-page__eyebrow {
+  color: color.change($color-text-inverse, $alpha: 0.7);
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-xs;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.login-page__title {
+  margin-top: $spacing-3;
+  color: $color-surface-paper;
+  font-family: $typography-font-family-serif;
+  font-size: clamp(2.2rem, 7vw, 3.6rem);
+  line-height: 0.95;
+}
+
+.login-page__lede {
+  margin-top: $spacing-3;
+  color: color.change($color-text-inverse, $alpha: 0.78);
+}
+
+.login-form {
+  display: grid;
+  gap: $spacing-4;
+  margin-top: $spacing-5;
+}
+
+.login-form__field {
+  display: grid;
+  gap: $spacing-2;
+  color: $color-surface-paper;
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-xs;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.login-form__field input {
+  padding: $spacing-3 $spacing-4;
+  border: 1px solid color.change($color-text-inverse, $alpha: 0.18);
+  border-radius: $radius-md;
+  background: color.change($color-background-primary, $alpha: 0.56);
+  color: $color-surface-paper;
+}
+
+.login-form__field input:focus-visible {
+  outline: 2px solid color.change($color-accent-investigation, $alpha: 0.92);
+  outline-offset: 2px;
+}
+
+.login-form__error {
+  margin: 0;
+  color: color.change($color-accent-evidence, $alpha: 0.9);
+}
+
+.login-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+@media (max-width: 720px) {
+  .login-page {
+    padding: $spacing-4;
+  }
+}

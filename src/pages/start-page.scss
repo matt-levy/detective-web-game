@@ -1,0 +1,73 @@
+@use "sass:color";
+@use "../tokens/tokens.scss" as *;
+
+.start-page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: $spacing-5;
+}
+
+.start-page__panel {
+  width: min(100%, 780px);
+  padding: clamp($spacing-5, 5vw, 2.25 * $spacing-5);
+  border: 1px solid color.change($color-text-inverse, $alpha: 0.14);
+  border-radius: $radius-lg;
+  background:
+    linear-gradient(
+      180deg,
+      color.change($color-background-primary, $alpha: 0.72) 0%,
+      color.change($color-background-archive, $alpha: 0.9) 100%
+    ),
+    radial-gradient(
+      circle at top right,
+      color.change($color-accent-evidence, $alpha: 0.12) 0%,
+      transparent 32%
+    );
+  box-shadow: 0 24px 80px color.change($color-background-primary, $alpha: 0.35);
+}
+
+.start-page__eyebrow,
+.start-page__title,
+.start-page__lede {
+  margin: 0;
+}
+
+.start-page__eyebrow {
+  color: color.change($color-text-inverse, $alpha: 0.7);
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-xs;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.start-page__title {
+  margin-top: $spacing-3;
+  color: $color-surface-paper;
+  font-family: $typography-font-family-serif;
+  font-size: clamp(3.4rem, 8vw, 6.25rem);
+  line-height: 0.9;
+}
+
+.start-page__lede {
+  margin-top: $spacing-4;
+  max-width: 54ch;
+  color: color.change($color-text-inverse, $alpha: 0.78);
+}
+
+.start-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+  margin-top: $spacing-5;
+}
+
+@media (max-width: 720px) {
+  .start-page {
+    padding: $spacing-4;
+  }
+
+  .start-page__title {
+    font-size: clamp(2.6rem, 14vw, 4.2rem);
+  }
+}

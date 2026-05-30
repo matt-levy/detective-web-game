@@ -1,7 +1,8 @@
 @use "sass:color";
 @use "./tokens/tokens.scss" as *;
 
-.app-shell {
+.public-shell,
+.game-shell {
   min-height: 100svh;
   padding: $spacing-5;
   background:
@@ -17,13 +18,25 @@
     );
 }
 
-.app-shell__masthead {
+.game-shell {
   display: grid;
-  gap: $spacing-4;
-  margin-bottom: $spacing-5;
+  gap: $spacing-5;
 }
 
-.app-shell__eyebrow {
+.game-shell__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: $spacing-4;
+}
+
+.game-shell__eyebrow,
+.game-shell__title {
+  margin: 0;
+}
+
+.game-shell__eyebrow {
   margin: 0;
   color: color.change($color-text-inverse, $alpha: 0.68);
   font-family: $typography-font-family-typewriter;
@@ -32,57 +45,73 @@
   text-transform: uppercase;
 }
 
-.app-shell__title {
-  margin: 0;
+.game-shell__title {
   color: $color-surface-paper;
   font-family: $typography-font-family-serif;
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  line-height: 0.92;
-  text-align: left;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 0.95;
 }
 
-.app-shell__lede {
-  max-width: 64ch;
-  color: color.change($color-text-inverse, $alpha: 0.76);
-  text-align: left;
-}
-
-.app-shell__topline {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: start;
-  justify-content: space-between;
-  gap: $spacing-4;
-}
-
-.app-shell__actions {
-  display: flex;
-  flex-wrap: wrap;
+.game-shell__controls {
+  display: grid;
   gap: $spacing-3;
+  justify-items: end;
 }
 
-.app-shell__layout {
-  display: grid;
-  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.4fr);
-  gap: $spacing-5;
-  align-items: start;
-}
-
-.app-shell__sidebar {
-  display: grid;
+.game-shell__nav,
+.game-shell__session {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: $spacing-4;
 }
 
-.app-shell__board {
-  min-width: 0;
+.game-shell__user {
+  color: color.change($color-text-inverse, $alpha: 0.82);
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-sm;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shell-link {
+  color: color.change($color-text-inverse, $alpha: 0.82);
+  font-family: $typography-font-family-typewriter;
+  font-size: $typography-font-size-sm;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 160ms ease, opacity 160ms ease;
+}
+
+.shell-link:hover {
+  color: $color-surface-paper;
+}
+
+.shell-link:focus-visible {
+  outline: 2px solid color.change($color-accent-investigation, $alpha: 0.92);
+  outline-offset: 3px;
+}
+
+.shell-link--prominent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: calc(#{$spacing-3} - 1px) $spacing-4;
+  border: 1px solid color.change($color-accent-investigation, $alpha: 0.44);
+  border-radius: $radius-md;
+  background: color.change($color-background-primary, $alpha: 0.44);
+  box-shadow: $shadow-folder;
 }
 
 @media (max-width: 980px) {
-  .app-shell {
+  .public-shell,
+  .game-shell {
     padding: $spacing-4;
   }
 
-  .app-shell__layout {
-    grid-template-columns: 1fr;
+  .game-shell__controls {
+    justify-items: start;
   }
 }
