@@ -1,0 +1,14 @@
+{
+  "cases": [
+    {
+      "id": "bellweather",
+      "title": "Bellweather Case",
+      "subtitle": "Something something something"
+    },
+    {
+      "id": "bellweather2",
+      "title": "Bellweather Case 2",
+      "subtitle": "Something something something else"
+    }
+  ]
+}
